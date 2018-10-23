@@ -1,0 +1,35 @@
+#!/usr/bin/perl -w
+#
+#
+
+use strict;
+use warnings;
+use Cwd 'abs_path';
+use Env;
+
+my $REAL_SSH="/usr/bin/ssh";
+
+my $hostname = '';
+my $key = '';
+
+my $command = "$REAL_SSH -G " . join(' ', @ARGV);
+my @lines = `$command`;
+
+foreach(@lines) {
+    chomp;
+    $hostname = "$1.$2.$3.$4" if(/hostname\s(\d+).(\d+).(\d+).(\d+)/);
+    $key = "$1.pem" if(/identityfile\s(.*).pem/);
+}
+
+my $home = $ENV{"HOME"};
+if($key ne '') {
+	$key =~ s/\~/$home/g;
+
+    if(-f $key) {
+		my $v=`ssh-add $key`;
+		system($REAL_SSH, @ARGV);
+    }
+}
+
+print "Borrando $key\n";
+my $d = `ssh-add -D`;
