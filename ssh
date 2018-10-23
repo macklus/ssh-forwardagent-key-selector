@@ -27,9 +27,11 @@ if($key ne '') {
 
     if(-f $key) {
 		my $v=`ssh-add $key`;
-		system($REAL_SSH, @ARGV);
     }
 }
 
-print "Borrando $key\n";
-my $d = `ssh-add -D`;
+system($REAL_SSH, @ARGV);
+
+if($key ne '') {
+	my $d = `ssh-add -D`;
+}
