@@ -25,7 +25,18 @@ my $home = $ENV{"HOME"};
 if($key ne '') {
 	$key =~ s/\~/$home/g;
 
-    if(-f $key) {
+	my $addme = 1;
+
+	# check if key is loaded
+	my @loaded = `ssh-add -L`;
+	foreach(@loaded) {
+		if(/.*\s$key/) {
+			$addme = 0;
+			last;
+		}
+	}
+
+    if(-f $key && $addme) {
 		my $v=`ssh-add $key`;
     }
 }
