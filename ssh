@@ -18,7 +18,7 @@ my @lines = `$command`;
 foreach(@lines) {
     chomp;
     $hostname = "$1.$2.$3.$4" if(/hostname\s(\d+).(\d+).(\d+).(\d+)/);
-    $key = "$1.pem" if(/identityfile\s(.*).pem/);
+    $key = "$1" if(/identityfile\s(.*)/);
 }
 
 my $home = $ENV{"HOME"};
